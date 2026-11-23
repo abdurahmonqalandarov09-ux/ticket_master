@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}{{ team.team_name }}{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">ПРОФИЛЬ КОМАНДЫ</span><h1>{{ team.team_name }}</h1><p>{{ team }}</p></section>
+<section class="section"><div class="section-heading"><h2>Игроки команды</h2></div><div class="card-grid">{% for player in players %}<a class="entity-card" href="{% url 'player_detail' player.id %}"><div class="entity-icon">👤</div><h3>{{ player }}</h3><p class="muted">Игровой номер: {{ player.number|default:"—" }}</p><span class="text-link">Профиль игрока →</span></a>{% empty %}<div class="empty-state">Игроки пока не добавлены.</div>{% endfor %}</div></section>
+{% endblock %}

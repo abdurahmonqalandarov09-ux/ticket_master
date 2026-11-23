@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Мои заказы{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">ЛИЧНЫЙ КАБИНЕТ</span><h1>Мои заказы</h1><p>История твоих покупок.</p></section>
+<div class="glass-panel">{% for order in orders %}<div class="order-row"><div><b>{{ order.ticket_type }}</b><p class="muted">Заказ №{{ order.id }} · {{ order.created_at|date:"d.m.Y H:i" }}</p></div><div class="order-meta"><b>{{ order.price }}</b><span class="pill">{{ order.get_status_display|default:order.status }}</span></div></div>{% empty %}<div class="empty-state">У тебя пока нет заказов.</div>{% endfor %}</div>
+{% endblock %}

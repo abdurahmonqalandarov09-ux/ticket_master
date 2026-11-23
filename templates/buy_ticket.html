@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Покупка билета{% endblock %}
+{% block content %}
+<section class="form-wrap"><div class="form-card"><span class="eyebrow">БРОНИРОВАНИЕ</span><h1>Покупка билета</h1><p class="muted">{{ ticket_type.match }} · {{ ticket_type.price }} за билет</p>
+<form method="post">{% csrf_token %}<label for="quantity">Количество билетов</label><input id="quantity" type="number" name="quantity" min="1" max="{{ ticket_type.quantity }}" value="1" required><p class="hint">Доступно: {{ ticket_type.quantity }}</p><button class="button button-full" type="submit">Подтвердить покупку</button></form>
+<a class="back-link" href="{% url 'match_detail' ticket_type.match.id %}">← Вернуться к матчу</a></div></section>
+{% endblock %}

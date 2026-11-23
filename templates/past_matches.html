@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Завершённые матчи{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">АРХИВ ИГР</span><h1>Завершённые матчи</h1><p>Результаты прошедших встреч и доступные видео.</p></section>
+<div class="card-grid">
+{% for match in matches %}<article class="match-card"><div class="match-top"><span class="pill">Завершён</span><span class="muted">{{ match.date|date:"d.m.Y" }}</span></div><div class="teams-line"><div class="team-name">{{ match.team1 }}</div><strong class="score">{{ match.home_score }} : {{ match.away_score }}</strong><div class="team-name">{{ match.team2 }}</div></div><div class="match-bottom"><span>{{ match.stadium|default:"" }}</span><a href="{% url 'match_video' match.id %}">Смотреть видео →</a></div></article>
+{% empty %}<div class="empty-state">Завершённых матчей пока нет.</div>{% endfor %}
+</div>
+{% endblock %}

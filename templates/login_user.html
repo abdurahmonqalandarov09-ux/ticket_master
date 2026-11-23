@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<section class="form-wrap"><div class="form-card"><span class="eyebrow">С РАДОСТЬЮ ВСТРЕЧАЕМ</span><h1>Войти</h1><p class="muted">Войди, чтобы покупать билеты и видеть заказы.</p><form method="post">{% csrf_token %}<label for="username">Логин</label><input id="username" name="username" autocomplete="username" required><label for="password">Пароль</label><input id="password" type="password" name="password" autocomplete="current-password" required><button class="button button-full" type="submit">Войти</button></form><p class="form-note">Нет аккаунта? <a href="{% url 'registration' %}">Зарегистрироваться</a></p></div></section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}TicketMaster — главная{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">ТВОЙ БИЛЕТ В МИР ФУТБОЛА</span>
+    <h1>Большие матчи.<br><span>Незабываемые эмоции.</span></h1>
+    <p>Находи предстоящие игры, выбирай билеты и будь частью атмосферы стадиона.</p>
+    <div class="hero-actions"><a class="button" href="{% url 'matches' %}">Найти матч <span>↗</span></a><a class="button button-outline" href="{% url 'teams' %}">Все команды</a></div>
+  </div>
+  <div class="hero-art"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="ball">⚽</div><div class="hero-tag"><b>LIVE</b><span>Энергия футбола</span></div></div>
+</section>
+<section class="section">
+  <div class="section-heading"><div><span class="eyebrow">НЕ ПРОПУСТИ</span><h2>Ближайшие матчи</h2></div><a class="text-link" href="{% url 'matches' %}">Все матчи ↗</a></div>
+  <div class="card-grid">
+    {% for match in st %}
+      <article class="match-card">
+        <div class="match-top"><span class="pill">{{ match.league|default:"Футбольный матч" }}</span><span class="muted">{{ match.date|date:"d.m.Y H:i" }}</span></div>
+        <div class="teams-line"><div class="team-name">{{ match.team1 }}</div><span class="versus">VS</span><div class="team-name">{{ match.team2 }}</div></div>
+        <div class="match-bottom"><span>⌖ {{ match.stadium|default:"Стадион уточняется" }}</span><a href="{% url 'match_detail' match.id %}">Подробнее →</a></div>
+      </article>
+    {% empty %}<div class="empty-state">Пока нет предстоящих матчей. Добавь их через панель администратора.</div>{% endfor %}
+  </div>
+</section>
+{% endblock %}

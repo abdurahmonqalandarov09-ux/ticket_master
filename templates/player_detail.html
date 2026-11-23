@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Игрок — TicketMaster{% endblock %}
+{% block content %}
+<section class="profile-card"><div class="profile-avatar">👤</div><span class="eyebrow">ПРОФИЛЬ ИГРОКА</span><h1>{{ player }}</h1><div class="profile-number">№ {{ player.number|default:"—" }}</div><p class="muted">Информация об игроке</p></section>
+{% endblock %}

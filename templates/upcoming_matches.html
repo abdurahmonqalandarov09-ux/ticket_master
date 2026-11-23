@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Предстоящие матчи{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">СЛЕДУЮЩИЕ ИГРЫ</span><h1>Предстоящие матчи</h1><p>Выбирай игру заранее и занимай лучшие места.</p></section>
+<div class="card-grid">
+{% for match in matches %}<article class="match-card"><div class="match-top"><span class="pill pill-green">Предстоящий</span><span class="muted">{{ match.date|date:"d.m.Y H:i" }}</span></div><div class="teams-line"><div class="team-name">{{ match.team1 }}</div><span class="versus">VS</span><div class="team-name">{{ match.team2 }}</div></div><div class="match-bottom"><span>{{ match.stadium|default:"Стадион уточняется" }}</span><a href="{% url 'match_detail' match.id %}">Билеты →</a></div></article>
+{% empty %}<div class="empty-state">Предстоящих матчей пока нет.</div>{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Мои билеты{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">ТВОИ ПОСЕЩЕНИЯ</span><h1>Мои билеты</h1><p>Билеты с подтверждённой оплатой.</p></section>
+<div class="ticket-list">{% for order in orders %}<article class="ticket-card"><div class="ticket-stub"><span>TicketMaster</span><strong>#{{ order.id }}</strong></div><div class="ticket-info"><b>{{ order.ticket_type.match }}</b><p class="muted">Количество: {{ order.quantity }} · {{ order.created_at|date:"d.m.Y" }}</p><span class="pill pill-green">Оплачен</span></div><div class="ticket-total">{{ order.price }}</div></article>{% empty %}<div class="empty-state">Оплаченных билетов пока нет.</div>{% endfor %}</div>
+{% endblock %}

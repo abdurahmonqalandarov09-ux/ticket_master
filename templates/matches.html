@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Матчи — TicketMaster{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">КАЛЕНДАРЬ ИГР</span><h1>Все матчи</h1><p>Выбери матч и узнай подробности о билетах.</p></section>
+<form class="filter-bar" method="get"><label for="league">Фильтр по лиге</label><select id="league" name="league"><option value="">Все лиги</option>{% for item in leagues %}<option value="{{ item.id }}" {% if league == item.id|stringformat:"s" %}selected{% endif %}>{{ item }}</option>{% endfor %}</select><button class="button button-small" type="submit">Применить</button></form>
+<div class="card-grid">
+{% for match in matches %}
+  <article class="match-card"><div class="match-top"><span class="pill">{{ match.league|default:"Матч" }}</span><span class="muted">{{ match.date|date:"d.m.Y H:i" }}</span></div><div class="teams-line"><div class="team-name">{{ match.team1 }}</div><span class="versus">VS</span><div class="team-name">{{ match.team2 }}</div></div><div class="match-bottom"><span>{{ match.stadium|default:"Стадион не указан" }}</span><a href="{% url 'match_detail' match.id %}">Открыть →</a></div></article>
+{% empty %}<div class="empty-state">Матчи пока не добавлены.</div>{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Команды{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">КЛУБЫ И СБОРНЫЕ</span><h1>Команды</h1><p>Знакомься с участниками турниров.</p></section>
+<form class="filter-bar" method="get"><label for="league">Лига</label><select id="league" name="league"><option value="">Все лиги</option>{% for item in leagues %}<option value="{{ item.id }}" {% if league == item.id|stringformat:"s" %}selected{% endif %}>{{ item }}</option>{% endfor %}</select><button class="button button-small">Фильтровать</button></form>
+<div class="card-grid">{% for team in teams %}<a class="entity-card" href="{% url 'team_detail' team.id %}"><div class="entity-icon">⚽</div><h3>{{ team.team_name }}</h3><p class="muted">{{ team }}</p><span class="text-link">Профиль команды →</span></a>{% empty %}<div class="empty-state">Команды пока не добавлены.</div>{% endfor %}</div>
+{% endblock %}

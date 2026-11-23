@@ -1,0 +1,51 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}TicketMaster{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/ticket_master.css' %}">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="site-header">
+    <a class="brand" href="{% url 'home' %}"><span class="brand-mark">✦</span> Ticket<span>Master</span></a>
+    <nav class="main-nav">
+      <a href="{% url 'home' %}">Главная</a>
+      <a href="{% url 'matches' %}">Матчи</a>
+      <a href="{% url 'teams' %}">Команды</a>
+      <a href="{% url 'leagues' %}">Лиги</a>
+      <a href="{% url 'stadiums' %}">Стадионы</a>
+    </nav>
+    <div class="header-actions">
+      {% if user.is_authenticated %}
+        <a class="nav-extra" href="{% url 'my_tickets' %}">Мои билеты</a>
+        <a class="nav-extra" href="{% url 'my_orders' %}">Заказы</a>
+        <a class="button button-small button-outline" href="{% url 'logout' %}">Выйти</a>
+      {% else %}
+        <a class="nav-extra" href="{% url 'login' %}">Войти</a>
+        <a class="button button-small" href="{% url 'registration' %}">Регистрация</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container">
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="brand"><span class="brand-mark">✦</span> Ticket<span>Master</span></div>
+    <p>Футбол ближе. Выбирай матч, бронируй место и поддерживай свою команду.</p>
+    <small>© {% now "Y" %} TicketMaster</small>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Стадионы{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">АРЕНЫ</span><h1>Стадионы</h1><p>Места, где рождаются футбольные эмоции.</p></section>
+<div class="card-grid">{% for stadium in stadiums %}<a class="entity-card" href="{% url 'stadium_detail' stadium.id %}"><div class="entity-icon">🏟️</div><h3>{{ stadium }}</h3><span class="text-link">Подробнее →</span></a>{% empty %}<div class="empty-state">Стадионы пока не добавлены.</div>{% endfor %}</div>
+{% endblock %}

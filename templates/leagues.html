@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Лиги{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">ТУРНИРЫ</span><h1>Футбольные лиги</h1><p>Выбирай соревнование и изучай его команды.</p></section>
+<div class="card-grid">{% for league in leagues %}<a class="entity-card" href="{% url 'league_detail' league.id %}"><div class="entity-icon">🏆</div><h3>{{ league }}</h3><span class="text-link">Открыть лигу →</span></a>{% empty %}<div class="empty-state">Лиги пока не добавлены.</div>{% endfor %}</div>
+{% endblock %}

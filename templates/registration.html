@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+<section class="form-wrap"><div class="form-card"><span class="eyebrow">СОЗДАЙ АККАУНТ</span><h1>Регистрация</h1><p class="muted">Присоединяйся к TicketMaster.</p><form method="post">{% csrf_token %}<label for="username">Логин</label><input id="username" name="username" autocomplete="username" required><label for="password">Пароль</label><input id="password" type="password" name="password" autocomplete="new-password" required><button class="button button-full" type="submit">Создать аккаунт</button></form><p class="form-note">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p></div></section>
+{% endblock %}

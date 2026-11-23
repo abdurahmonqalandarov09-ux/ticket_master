@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}{{ league }}{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">ТУРНИР</span><h1>{{ league }}</h1></section>
+<section class="section"><div class="section-heading"><h2>Команды лиги</h2></div><div class="card-grid">{% for team in teams %}<a class="entity-card" href="{% url 'team_detail' team.id %}"><div class="entity-icon">⚽</div><h3>{{ team }}</h3><span class="text-link">Команда →</span></a>{% empty %}<div class="empty-state">Команды не найдены.</div>{% endfor %}</div></section>
+<section class="section"><div class="section-heading"><h2>Матчи лиги</h2></div><div class="card-grid">{% for match in matches %}<article class="match-card"><div class="match-top"><span class="pill">{{ match.status }}</span><span class="muted">{{ match.date|date:"d.m.Y H:i" }}</span></div><div class="teams-line"><div class="team-name">{{ match.team1 }}</div><span class="versus">VS</span><div class="team-name">{{ match.team2 }}</div></div><div class="match-bottom"><a href="{% url 'match_detail' match.id %}">Подробнее →</a></div></article>{% empty %}<div class="empty-state">Матчи не найдены.</div>{% endfor %}</div></section>
+{% endblock %}

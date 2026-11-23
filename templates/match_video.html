@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Видео матча{% endblock %}
+{% block content %}
+<section class="page-heading"><span class="eyebrow">ПОВТОР МАТЧА</span><h1>{{ match.team1 }} — {{ match.team2 }}</h1><p>{{ match.date|date:"d.m.Y" }} · {{ match.home_score }} : {{ match.away_score }}</p></section>
+<div class="video-panel">
+  {% if match.video_file %}
+    <video controls preload="metadata"><source src="{{ match.video_file.url }}">Ваш браузер не поддерживает видео.</video>
+  {% else %}
+    <div class="video-placeholder"><span>▶</span><h2>Видео пока недоступно</h2><p>Добавь видеофайл к этому матчу через Django Admin.</p></div>
+  {% endif %}
+</div>
+<a class="back-link" href="{% url 'match_detail' match.id %}">← Вернуться к матчу</a>
+{% endblock %}

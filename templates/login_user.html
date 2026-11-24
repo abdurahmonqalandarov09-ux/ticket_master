@@ -1,5 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}Вход{% endblock %}
+
 {% block content %}
-<section class="form-wrap"><div class="form-card"><span class="eyebrow">С РАДОСТЬЮ ВСТРЕЧАЕМ</span><h1>Войти</h1><p class="muted">Войди, чтобы покупать билеты и видеть заказы.</p><form method="post">{% csrf_token %}<label for="username">Логин</label><input id="username" name="username" autocomplete="username" required><label for="password">Пароль</label><input id="password" type="password" name="password" autocomplete="current-password" required><button class="button button-full" type="submit">Войти</button></form><p class="form-note">Нет аккаунта? <a href="{% url 'registration' %}">Зарегистрироваться</a></p></div></section>
+{% url 'register' as register_url %}
+<section class="auth">
+  <form class="form-card auth-card" method="post">
+    {% csrf_token %}
+    <span class="yellow-card" aria-hidden="true"></span>
+    <h1>Вход</h1>
+    <p class="muted">Войдите, чтобы купить билеты и посмотреть свои заказы.</p>
+
+    <div class="auth-fields">
+      <div class="field">
+        <label class="label" for="id-username">Имя пользователя</label>
+        <input class="input" id="id-username" name="username" type="text" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label class="label" for="id-password">Пароль</label>
+        <input class="input" id="id-password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">Войти</button>
+      {% if register_url %}<a class="btn btn-ghost" href="{{ register_url }}">Создать аккаунт</a>{% endif %}
+    </div>
+  </form>
+</section>
 {% endblock %}

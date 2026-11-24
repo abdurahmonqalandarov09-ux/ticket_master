@@ -1,0 +1,69 @@
+{# Билет матча. Вставка: include '_match_ticket.html' with match=m (для большого билета на главной добавь big=True) #}
+{# Цена и остаток необязательны: match.min_price и match.tickets_left, их считает твоя view через annotate #}
+{% url 'match_detail' match.id as detail_url %}
+<div class="ticket-wrap">
+  <article class="ticket{% if big %} ticket-lg{% endif %}" style="--lg: {{ match.league_id }}">
+    <div class="ticket-date">
+      <span class="day">{{ match.date|date:"j" }}</span>
+      <span class="mon">{{ match.date|date:"M" }}</span>
+      <span class="time">{{ match.date|date:"H:i" }}</span>
+    </div>
+
+    <div class="ticket-body">
+      <div class="ticket-league">
+        <span><i></i>{{ match.league.league_name }}</span>
+        {% if big %}<span class="flag">Ближайший матч</span>{% endif %}
+      </div>
+      <div class="ticket-teams">
+        <div class="ticket-team">
+          {% if match.team1.team_logo %}<img class="crest" src="{{ match.team1.team_logo.url }}" alt="">{% else %}<span class="crest">{{ match.team1.team_name|first|upper }}</span>{% endif %}
+          <b>{{ match.team1.team_name }}</b>
+        </div>
+        {% if match.status == 'finished' %}
+        <div class="ticket-score">{{ match.home_score }}<i>:</i>{{ match.away_score }}</div>
+        {% else %}
+        <div class="ticket-vs">против</div>
+        {% endif %}
+        <div class="ticket-team away">
+          {% if match.team2.team_logo %}<img class="crest" src="{{ match.team2.team_logo.url }}" alt="">{% else %}<span class="crest">{{ match.team2.team_name|first|upper }}</span>{% endif %}
+          <b>{{ match.team2.team_name }}</b>
+        </div>
+      </div>
+      <div class="ticket-fine">
+        {% if match.team1.stadium %}<span><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>{{ match.team1.stadium.name }}, {{ match.team1.stadium.city }}</span>{% endif %}
+        <span>Матч № {{ match.id|stringformat:"05d" }}</span>
+      </div>
+    </div>
+
+    {% if match.status == 'finished' %}
+    <div class="ticket-stub is-done">
+      <div class="stub-info">
+        <span class="stub-label">Матч окончен</span>
+        {% if match.video_file %}<span class="stub-note">Есть видеообзор</span>{% endif %}
+      </div>
+      <a class="btn btn-paper" href="{{ detail_url|default:'#' }}">{% if match.video_file %}<svg class="icon" aria-hidden="true"><use href="#i-play"/></svg>Смотреть{% else %}Подробнее{% endif %}</a>
+    </div>
+    {% elif match.tickets_left == 0 %}
+    <div class="ticket-stub is-soldout">
+      <div class="stub-info">
+        <strong>Распродано</strong>
+        <span class="stub-note">Билетов больше нет</span>
+      </div>
+    </div>
+    {% else %}
+    <div class="ticket-stub">
+      <div class="stub-info">
+        {% if match.min_price %}
+        <span class="stub-label">от</span>
+        <span class="stub-price">{{ match.min_price|floatformat:"-2" }}<small>TJS</small></span>
+        {% else %}
+        <span class="stub-label">Цены</span>
+        <span class="stub-note">на странице матча</span>
+        {% endif %}
+        {% if match.tickets_left and match.tickets_left <= 20 %}<span class="stub-note is-low">Осталось {{ match.tickets_left }}</span>{% endif %}
+      </div>
+      <a class="btn btn-ink" href="{{ detail_url|default:'#' }}">Купить билеты</a>
+    </div>
+    {% endif %}
+  </article>
+</div>

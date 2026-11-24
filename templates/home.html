@@ -1,25 +1,51 @@
 {% extends 'base.html' %}
-{% block title %}TicketMaster — главная{% endblock %}
+
 {% block content %}
+{% url 'matches' as matches_url %}
+{% url 'teams' as teams_url %}
+{% url 'leagues' as leagues_url %}
+{% url 'stadiums' as stadiums_url %}
+
 <section class="hero">
-  <div class="hero-copy">
-    <span class="eyebrow">ТВОЙ БИЛЕТ В МИР ФУТБОЛА</span>
-    <h1>Большие матчи.<br><span>Незабываемые эмоции.</span></h1>
-    <p>Находи предстоящие игры, выбирай билеты и будь частью атмосферы стадиона.</p>
-    <div class="hero-actions"><a class="button" href="{% url 'matches' %}">Найти матч <span>↗</span></a><a class="button button-outline" href="{% url 'teams' %}">Все команды</a></div>
-  </div>
-  <div class="hero-art"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="ball">⚽</div><div class="hero-tag"><b>LIVE</b><span>Энергия футбола</span></div></div>
+  <h1>Билеты на матчи топ-5 лиг и Лиги чемпионов</h1>
+  <p>Выберите матч, категорию билетов и закажите. Для законченных матчей есть видеообзоры.</p>
+  {% if st %}
+    {% include '_match_ticket.html' with match=st.0 big=True %}
+  {% else %}
+    <div class="empty">
+      <span class="pitch-mark"></span>
+      <strong>Ближайших матчей пока нет</strong>
+      <p>Загляните позже: расписание скоро появится.</p>
+    </div>
+  {% endif %}
 </section>
-<section class="section">
-  <div class="section-heading"><div><span class="eyebrow">НЕ ПРОПУСТИ</span><h2>Ближайшие матчи</h2></div><a class="text-link" href="{% url 'matches' %}">Все матчи ↗</a></div>
-  <div class="card-grid">
-    {% for match in st %}
-      <article class="match-card">
-        <div class="match-top"><span class="pill">{{ match.league|default:"Футбольный матч" }}</span><span class="muted">{{ match.date|date:"d.m.Y H:i" }}</span></div>
-        <div class="teams-line"><div class="team-name">{{ match.team1 }}</div><span class="versus">VS</span><div class="team-name">{{ match.team2 }}</div></div>
-        <div class="match-bottom"><span>⌖ {{ match.stadium|default:"Стадион уточняется" }}</span><a href="{% url 'match_detail' match.id %}">Подробнее →</a></div>
-      </article>
-    {% empty %}<div class="empty-state">Пока нет предстоящих матчей. Добавь их через панель администратора.</div>{% endfor %}
-  </div>
+
+{% if st|length > 1 %}
+<div class="section-head">
+  <h2>Дальше в расписании</h2>
+  {% if matches_url %}<a href="{{ matches_url }}">Все матчи</a>{% endif %}
+</div>
+<div class="stack">
+  {% for m in st %}{% if not forloop.first %}{% include '_match_ticket.html' with match=m %}{% endif %}{% endfor %}
+</div>
+{% endif %}
+
+<div class="divider"></div>
+
+<section>
+  <h2>Как купить билет</h2>
+  <ol class="steps">
+    <li><b>Выберите матч</b><p>Откройте список матчей и нажмите «Купить билеты» на нужном билете.</p></li>
+    <li><b>Выберите категорию</b><p>Обычный билет или VIP. Цена указана за одно место.</p></li>
+    <li><b>Заберите билет</b><p>Заказ появится в разделе «Мои билеты». Для покупки нужен аккаунт.</p></li>
+  </ol>
 </section>
+
+{% if teams_url or leagues_url or stadiums_url %}
+<div class="page-head-actions home-links">
+  {% if teams_url %}<a class="btn btn-ghost" href="{{ teams_url }}">Клубы</a>{% endif %}
+  {% if leagues_url %}<a class="btn btn-ghost" href="{{ leagues_url }}">Лиги</a>{% endif %}
+  {% if stadiums_url %}<a class="btn btn-ghost" href="{{ stadiums_url }}">Стадионы</a>{% endif %}
+</div>
+{% endif %}
 {% endblock %}

@@ -1,0 +1,11 @@
+{# Карточка стадиона. Вставка: include '_stadium_card.html' with stadium=s #}
+{% url 'stadium_detail' stadium.id as stadium_url %}
+<article class="stadium-card">
+  {% if stadium.photo %}<img src="{{ stadium.photo.url }}" alt="">{% else %}<span class="pitch-mark stadium-mark"></span>{% endif %}
+  <div class="stadium-info">
+    <span class="stadium-cap">{{ stadium.capacity|floatformat:"0g" }}</span>
+    <span class="muted">мест</span>
+    <h3>{% if stadium_url %}<a href="{{ stadium_url }}">{{ stadium.name }}</a>{% else %}{{ stadium.name }}{% endif %}</h3>
+    <span>{{ stadium.city }}</span>
+  </div>
+</article>

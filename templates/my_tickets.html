@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}Мои билеты{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">ТВОИ ПОСЕЩЕНИЯ</span><h1>Мои билеты</h1><p>Билеты с подтверждённой оплатой.</p></section>
-<div class="ticket-list">{% for order in orders %}<article class="ticket-card"><div class="ticket-stub"><span>TicketMaster</span><strong>#{{ order.id }}</strong></div><div class="ticket-info"><b>{{ order.ticket_type.match }}</b><p class="muted">Количество: {{ order.quantity }} · {{ order.created_at|date:"d.m.Y" }}</p><span class="pill pill-green">Оплачен</span></div><div class="ticket-total">{{ order.price }}</div></article>{% empty %}<div class="empty-state">Оплаченных билетов пока нет.</div>{% endfor %}</div>
+{% url 'my_orders' as orders_url %}
+{% url 'matches' as matches_url %}
+<div class="page-head">
+  <div>
+    <h1>Мои билеты</h1>
+    <p>Оплаченные билеты. Покажите заказ на входе на стадион.</p>
+  </div>
+  {% if orders_url %}<div class="page-head-actions"><a class="btn btn-ghost" href="{{ orders_url }}">История заказов</a></div>{% endif %}
+</div>
+
+<div class="stack">
+  {% for order in orders %}
+    {% include '_my_ticket.html' with order=order %}
+  {% empty %}
+  <div class="empty">
+    <span class="pitch-mark"></span>
+    <strong>Оплаченных билетов пока нет</strong>
+    <p>Выберите матч и купите билеты, они появятся здесь.</p>
+    {% if matches_url %}<a class="btn btn-primary" href="{{ matches_url }}">Смотреть матчи</a>{% endif %}
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}

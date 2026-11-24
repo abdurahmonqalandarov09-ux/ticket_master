@@ -1,0 +1,20 @@
+{# Категория билетов на странице матча. Вставка: include '_tier.html' with tier=t #}
+{# Форма покупки появится сама, когда в urls.py будет путь с именем buy_ticket, который принимает id категории #}
+{% url 'buy_ticket' tier.id as buy_url %}
+<div class="ticket-wrap">
+  <article class="tier{% if tier.ticket == 'vip' %} tier-vip{% endif %}">
+    <div class="tier-top">
+      <h3 class="tier-name">{{ tier.get_ticket_display }}</h3>
+      {% if tier.quantity == 0 %}<span class="badge badge-canceled">Распродано</span>{% elif tier.quantity <= 20 %}<span class="badge badge-low">Осталось {{ tier.quantity }}</span>{% endif %}
+    </div>
+    <p class="tier-price">{{ tier.price|floatformat:"-2" }}<small>TJS</small></p>
+    {% if tier.quantity > 0 and buy_url %}
+    <form class="tier-buy" method="post" action="{{ buy_url }}">
+      {% csrf_token %}
+      <label class="sr-only" for="qty-{{ tier.id }}">Количество билетов</label>
+      <input class="input" id="qty-{{ tier.id }}" type="number" name="quantity" min="1" max="{{ tier.quantity }}" value="1">
+      <button class="btn btn-ink" type="submit">Купить</button>
+    </form>
+    {% endif %}
+  </article>
+</div>

@@ -1,0 +1,17 @@
+{# Карточка игрока. Вставка: include '_player_card.html' with player=p #}
+{% url 'player_detail' player.id as player_url %}
+<article class="player-card">
+  <div class="player-photo">
+    {% if player.photo %}<img src="{{ player.photo.url }}" alt="{{ player.player_name }}">{% endif %}
+    {% if player.number %}<span class="player-no" aria-hidden="true">{{ player.number }}</span>{% endif %}
+  </div>
+  <div class="player-body">
+    <div><span class="pos pos-{{ player.position }}" title="{{ player.get_position_display }}">{{ player.position|upper }}</span>{% if player.is_captain %} <span class="badge badge-captain">Капитан</span>{% endif %}</div>
+    <h3>{% if player_url %}<a href="{{ player_url }}">{{ player.player_name }}</a>{% else %}{{ player.player_name }}{% endif %}</h3>
+    <p class="muted">{{ player.team.team_name }}{% if player.country %}, {{ player.country }}{% endif %}</p>
+    <div class="player-foot">
+      <span>{% if player.height %}{{ player.height }} см{% endif %}</span>
+      <span>Стоимость <b>{{ player.transfer_value|floatformat:"0g" }}</b></span>
+    </div>
+  </div>
+</article>

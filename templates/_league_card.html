@@ -1,0 +1,14 @@
+{# Карточка лиги. Вставка: include '_league_card.html' with league=l #}
+{% url 'league_detail' league.id as league_url %}
+<a class="card league-card" href="{{ league_url|default:'#' }}" style="--lg: {{ league.id }}">
+  <div class="card-head">
+    {% if league.league_logo %}<img class="crest crest-lg" src="{{ league.league_logo.url }}" alt="">{% else %}<span class="crest crest-lg">{{ league.league_name|first|upper }}</span>{% endif %}
+    <div>
+      <h3>{{ league.league_name }}</h3>
+      {% if league.country %}<small>{{ league.country }}</small>{% endif %}
+    </div>
+  </div>
+  <dl class="facts">
+    <div><dt>Клубов</dt><dd>{{ league.teams.count }}</dd></div>
+  </dl>
+</a>

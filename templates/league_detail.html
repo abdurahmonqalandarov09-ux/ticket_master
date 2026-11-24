@@ -1,7 +1,45 @@
 {% extends 'base.html' %}
-{% block title %}{{ league }}{% endblock %}
+{% block title %}{{ league.league_name }}{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">ТУРНИР</span><h1>{{ league }}</h1></section>
-<section class="section"><div class="section-heading"><h2>Команды лиги</h2></div><div class="card-grid">{% for team in teams %}<a class="entity-card" href="{% url 'team_detail' team.id %}"><div class="entity-icon">⚽</div><h3>{{ team }}</h3><span class="text-link">Команда →</span></a>{% empty %}<div class="empty-state">Команды не найдены.</div>{% endfor %}</div></section>
-<section class="section"><div class="section-heading"><h2>Матчи лиги</h2></div><div class="card-grid">{% for match in matches %}<article class="match-card"><div class="match-top"><span class="pill">{{ match.status }}</span><span class="muted">{{ match.date|date:"d.m.Y H:i" }}</span></div><div class="teams-line"><div class="team-name">{{ match.team1 }}</div><span class="versus">VS</span><div class="team-name">{{ match.team2 }}</div></div><div class="match-bottom"><a href="{% url 'match_detail' match.id %}">Подробнее →</a></div></article>{% empty %}<div class="empty-state">Матчи не найдены.</div>{% endfor %}</div></section>
+{% url 'leagues' as leagues_url %}
+<a class="back" href="{% if leagues_url %}{{ leagues_url }}{% else %}/{% endif %}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>Все лиги</a>
+
+<section class="profile profile-league pitch-corners" style="--lg: {{ league.id }}">
+  {% if league.league_logo %}<img class="crest crest-xl" src="{{ league.league_logo.url }}" alt="">{% else %}<span class="crest crest-xl">{{ league.league_name|first|upper }}</span>{% endif %}
+  <div class="profile-main">
+    <h1>{{ league.league_name }}</h1>
+    {% if league.country %}<p class="muted">{{ league.country }}</p>{% endif %}
+  </div>
+  <dl class="facts profile-facts">
+    <div><dt>Клубов</dt><dd>{{ teams|length }}</dd></div>
+    <div><dt>Матчей в расписании</dt><dd>{{ matches|length }}</dd></div>
+  </dl>
+</section>
+
+<div class="section-head"><h2>Клубы</h2></div>
+<div class="grid">
+  {% for t in teams %}
+    {% include '_team_card.html' with team=t %}
+  {% empty %}
+    <div class="empty">
+      <span class="pitch-mark"></span>
+      <strong>Клубов пока нет</strong>
+      <p>Клубы этой лиги появятся здесь.</p>
+    </div>
+  {% endfor %}
+</div>
+
+<div class="section-head"><h2>Матчи</h2></div>
+<div class="stack">
+  {% for m in matches %}
+    {% include '_match_ticket.html' with match=m %}
+  {% empty %}
+    <div class="empty">
+      <span class="pitch-mark"></span>
+      <strong>Матчей пока нет</strong>
+      <p>Расписание этой лиги скоро появится.</p>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

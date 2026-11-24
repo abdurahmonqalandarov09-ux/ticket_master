@@ -1,13 +1,24 @@
 {% extends 'base.html' %}
-{% block title %}Видео матча{% endblock %}
+{% block title %}Видео: {{ match.team1.team_name }} и {{ match.team2.team_name }}{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">ПОВТОР МАТЧА</span><h1>{{ match.team1 }} — {{ match.team2 }}</h1><p>{{ match.date|date:"d.m.Y" }} · {{ match.home_score }} : {{ match.away_score }}</p></section>
-<div class="video-panel">
-  {% if match.video_file %}
-    <video controls preload="metadata"><source src="{{ match.video_file.url }}">Ваш браузер не поддерживает видео.</video>
-  {% else %}
-    <div class="video-placeholder"><span>▶</span><h2>Видео пока недоступно</h2><p>Добавь видеофайл к этому матчу через Django Admin.</p></div>
-  {% endif %}
+{% url 'match_detail' match.id as detail_url %}
+<a class="back" href="{% if detail_url %}{{ detail_url }}{% else %}/{% endif %}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>К матчу</a>
+
+<div class="page-head">
+  <div>
+    <h1>{{ match.team1.team_name }} {{ match.home_score }}:{{ match.away_score }} {{ match.team2.team_name }}</h1>
+    <p>{{ match.league.league_name }}, {{ match.date|date:"j M Y" }}</p>
+  </div>
 </div>
-<a class="back-link" href="{% url 'match_detail' match.id %}">← Вернуться к матчу</a>
+
+{% if match.video_file %}
+<div class="video"><video controls preload="metadata" src="{{ match.video_file.url }}"></video></div>
+{% else %}
+<div class="empty">
+  <span class="pitch-mark"></span>
+  <strong>Видеообзора пока нет</strong>
+  <p>Видео ещё не загрузили. Загляните позже.</p>
+</div>
+{% endif %}
 {% endblock %}

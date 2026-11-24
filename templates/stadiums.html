@@ -1,6 +1,23 @@
 {% extends 'base.html' %}
 {% block title %}Стадионы{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">АРЕНЫ</span><h1>Стадионы</h1><p>Места, где рождаются футбольные эмоции.</p></section>
-<div class="card-grid">{% for stadium in stadiums %}<a class="entity-card" href="{% url 'stadium_detail' stadium.id %}"><div class="entity-icon">🏟️</div><h3>{{ stadium }}</h3><span class="text-link">Подробнее →</span></a>{% empty %}<div class="empty-state">Стадионы пока не добавлены.</div>{% endfor %}</div>
+<div class="page-head">
+  <div>
+    <h1>Стадионы</h1>
+    <p>Где играют клубы: города и вместимость.</p>
+  </div>
+</div>
+
+<div class="grid grid-wide">
+  {% for s in stadiums %}
+    {% include '_stadium_card.html' with stadium=s %}
+  {% empty %}
+    <div class="empty">
+      <span class="pitch-mark"></span>
+      <strong>Стадионов пока нет</strong>
+      <p>Стадионы появятся здесь, когда их добавят.</p>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

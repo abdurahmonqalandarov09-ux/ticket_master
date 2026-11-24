@@ -1,5 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}Регистрация{% endblock %}
+
 {% block content %}
-<section class="form-wrap"><div class="form-card"><span class="eyebrow">СОЗДАЙ АККАУНТ</span><h1>Регистрация</h1><p class="muted">Присоединяйся к TicketMaster.</p><form method="post">{% csrf_token %}<label for="username">Логин</label><input id="username" name="username" autocomplete="username" required><label for="password">Пароль</label><input id="password" type="password" name="password" autocomplete="new-password" required><button class="button button-full" type="submit">Создать аккаунт</button></form><p class="form-note">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p></div></section>
+{% url 'login' as login_url %}
+<section class="auth">
+  <form class="form-card auth-card" method="post">
+    {% csrf_token %}
+    <span class="yellow-card" aria-hidden="true"></span>
+    <h1>Регистрация</h1>
+    <p class="muted">Создайте аккаунт, чтобы покупать билеты и видеть свои заказы.</p>
+
+    <div class="auth-fields">
+      <div class="field">
+        <label class="label" for="id-username">Имя пользователя <span class="req">*</span></label>
+        <input class="input" id="id-username" name="username" type="text" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label class="label" for="id-password">Пароль <span class="req">*</span></label>
+        <input class="input" id="id-password" name="password" type="password" autocomplete="new-password" required>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">Создать аккаунт</button>
+      {% if login_url %}<a class="btn btn-ghost" href="{{ login_url }}">Уже есть аккаунт</a>{% endif %}
+    </div>
+  </form>
+</section>
 {% endblock %}

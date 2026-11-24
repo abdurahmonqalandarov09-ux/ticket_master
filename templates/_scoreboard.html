@@ -1,0 +1,24 @@
+{# Табло матча для страницы матча. Вставка: include '_scoreboard.html' with match=match #}
+<section class="scoreboard pitch-corners" aria-label="Матч">
+  <div class="scoreboard-top">
+    <span><i class="lg-dot" style="--lg: {{ match.league_id }}"></i>{{ match.league.league_name }}</span>
+    <span><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>{{ match.date|date:"j M Y, H:i" }}</span>
+    {% if match.team1.stadium %}<span><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>{{ match.team1.stadium.name }}, {{ match.team1.stadium.city }}</span>{% endif %}
+  </div>
+  <div class="scoreboard-main">
+    <div class="sb-team">
+      {% if match.team1.team_logo %}<img class="crest sb-crest" src="{{ match.team1.team_logo.url }}" alt="">{% else %}<span class="crest">{{ match.team1.team_name|first|upper }}</span>{% endif %}
+      <b>{{ match.team1.team_name }}</b>
+    </div>
+    {% if match.status == 'finished' %}
+    <div class="sb-score">{{ match.home_score }}<i>:</i>{{ match.away_score }}</div>
+    {% else %}
+    <div class="sb-time">{{ match.date|date:"H:i" }}<small>{{ match.date|date:"j M" }}</small></div>
+    {% endif %}
+    <div class="sb-team">
+      {% if match.team2.team_logo %}<img class="crest sb-crest" src="{{ match.team2.team_logo.url }}" alt="">{% else %}<span class="crest">{{ match.team2.team_name|first|upper }}</span>{% endif %}
+      <b>{{ match.team2.team_name }}</b>
+    </div>
+  </div>
+  <div class="sb-status"><span class="badge badge-{{ match.status }}">{{ match.get_status_display }}</span></div>
+</section>

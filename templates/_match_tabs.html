@@ -1,0 +1,13 @@
+{# Вкладки над списками матчей. Показываются сами, когда в urls.py есть имена upcoming_matches и past_matches #}
+{% url 'matches' as all_url %}
+{% url 'upcoming_matches' as up_url %}
+{% url 'past_matches' as past_url %}
+{% if up_url or past_url %}
+{% with page=request.resolver_match.url_name %}
+<nav class="tabs" aria-label="Матчи">
+  {% if all_url %}<a class="tab{% if page == 'matches' %} is-active{% endif %}" href="{{ all_url }}">Все матчи</a>{% endif %}
+  {% if up_url %}<a class="tab{% if page == 'upcoming_matches' %} is-active{% endif %}" href="{{ up_url }}">Предстоящие</a>{% endif %}
+  {% if past_url %}<a class="tab{% if page == 'past_matches' %} is-active{% endif %}" href="{{ past_url }}">Прошедшие</a>{% endif %}
+</nav>
+{% endwith %}
+{% endif %}

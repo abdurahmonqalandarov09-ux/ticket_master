@@ -1,6 +1,23 @@
 {% extends 'base.html' %}
 {% block title %}Лиги{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">ТУРНИРЫ</span><h1>Футбольные лиги</h1><p>Выбирай соревнование и изучай его команды.</p></section>
-<div class="card-grid">{% for league in leagues %}<a class="entity-card" href="{% url 'league_detail' league.id %}"><div class="entity-icon">🏆</div><h3>{{ league }}</h3><span class="text-link">Открыть лигу →</span></a>{% empty %}<div class="empty-state">Лиги пока не добавлены.</div>{% endfor %}</div>
+<div class="page-head">
+  <div>
+    <h1>Лиги</h1>
+    <p>Выберите лигу, чтобы увидеть её клубы и матчи.</p>
+  </div>
+</div>
+
+<div class="grid">
+  {% for l in leagues %}
+    {% include '_league_card.html' with league=l %}
+  {% empty %}
+    <div class="empty">
+      <span class="pitch-mark"></span>
+      <strong>Лиг пока нет</strong>
+      <p>Лиги появятся здесь, когда их добавят.</p>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

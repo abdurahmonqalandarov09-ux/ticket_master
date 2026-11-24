@@ -1,0 +1,17 @@
+{# Карточка клуба. Вставка: include '_team_card.html' with team=t #}
+{% url 'team_detail' team.id as team_url %}
+<a class="card" href="{{ team_url|default:'#' }}">
+  <div class="card-head">
+    {% if team.team_logo %}<img class="crest crest-lg" src="{{ team.team_logo.url }}" alt="">{% else %}<span class="crest crest-lg">{{ team.team_name|first|upper }}</span>{% endif %}
+    <div>
+      <h3>{{ team.team_name }}</h3>
+      {% if team.city %}<small>{{ team.city }}</small>{% endif %}
+    </div>
+  </div>
+  <div>{% for l in team.leagues.all %}<span class="tag"><span class="lg-dot" style="--lg: {{ l.id }}"></span>{{ l.league_name }}</span>{% endfor %}</div>
+  <dl class="facts">
+    <div><dt>Тренер</dt><dd>{{ team.coach|default:"не назначен" }}</dd></div>
+    <div><dt>Стадион</dt><dd>{{ team.stadium|default:"не указан" }}</dd></div>
+    {% if team.founded_year %}<div><dt>Основан</dt><dd>{{ team.founded_year }}</dd></div>{% endif %}
+  </dl>
+</a>

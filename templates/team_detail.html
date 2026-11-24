@@ -1,6 +1,43 @@
 {% extends 'base.html' %}
 {% block title %}{{ team.team_name }}{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">ПРОФИЛЬ КОМАНДЫ</span><h1>{{ team.team_name }}</h1><p>{{ team }}</p></section>
-<section class="section"><div class="section-heading"><h2>Игроки команды</h2></div><div class="card-grid">{% for player in players %}<a class="entity-card" href="{% url 'player_detail' player.id %}"><div class="entity-icon">👤</div><h3>{{ player }}</h3><p class="muted">Игровой номер: {{ player.number|default:"—" }}</p><span class="text-link">Профиль игрока →</span></a>{% empty %}<div class="empty-state">Игроки пока не добавлены.</div>{% endfor %}</div></section>
+{% url 'teams' as teams_url %}
+{% url 'stadium_detail' team.stadium.id as stadium_url %}
+<a class="back" href="{% if teams_url %}{{ teams_url }}{% else %}/{% endif %}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>Все клубы</a>
+
+<section class="profile pitch-corners">
+  {% if team.team_logo %}<img class="crest crest-xl" src="{{ team.team_logo.url }}" alt="">{% else %}<span class="crest crest-xl">{{ team.team_name|first|upper }}</span>{% endif %}
+
+  <div class="profile-main">
+    <h1>{{ team.team_name }}</h1>
+    {% if team.city or team.country %}<p class="muted">{{ team.city }}{% if team.city and team.country %}, {% endif %}{{ team.country }}</p>{% endif %}
+    <div>
+      {% for l in team.leagues.all %}
+        {% url 'league_detail' l.id as league_url %}
+        <a class="tag" href="{{ league_url|default:'#' }}"><span class="lg-dot" style="--lg: {{ l.id }}"></span>{{ l.league_name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <dl class="facts profile-facts">
+    <div><dt>Тренер</dt><dd>{{ team.coach|default:"не назначен" }}</dd></div>
+    <div><dt>Стадион</dt><dd>{% if team.stadium %}{% if stadium_url %}<a href="{{ stadium_url }}">{{ team.stadium.name }}</a>{% else %}{{ team.stadium.name }}{% endif %}{% else %}не указан{% endif %}</dd></div>
+    {% if team.founded_year %}<div><dt>Основан</dt><dd>{{ team.founded_year }}</dd></div>{% endif %}
+    <div><dt>Игроков в составе</dt><dd>{{ players|length }}</dd></div>
+  </dl>
+</section>
+
+<div class="section-head"><h2>Состав</h2></div>
+<div class="grid">
+  {% for p in players %}
+    {% include '_player_card.html' with player=p %}
+  {% empty %}
+    <div class="empty">
+      <span class="pitch-mark"></span>
+      <strong>Состав пока не добавлен</strong>
+      <p>Игроки этого клуба появятся здесь.</p>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

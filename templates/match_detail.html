@@ -1,7 +1,39 @@
 {% extends 'base.html' %}
-{% block title %}Матч — TicketMaster{% endblock %}
+{% block title %}{{ match.team1.team_name }} против {{ match.team2.team_name }}{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">ИНФОРМАЦИЯ О МАТЧЕ</span><h1>{{ match.team1 }} <span class="muted">VS</span> {{ match.team2 }}</h1><p>{{ match.date|date:"d.m.Y H:i" }} · {{ match.stadium|default:"Стадион уточняется" }}</p></section>
-<div class="detail-layout"><section class="glass-panel"><span class="eyebrow">МАТЧ</span><div class="big-score">{% if match.status == 'finished' %}{{ match.home_score }} : {{ match.away_score }}{% else %}VS{% endif %}</div><p><b>Лига:</b> {{ match.league|default:"Не указана" }}</p><p><b>Статус:</b> {{ match.get_status_display|default:match.status }}</p></section>
-<section class="glass-panel"><h2>Доступные билеты</h2>{% for ticket in ticket_types %}<div class="ticket-row"><div><b>{{ ticket }}</b><p class="muted">В наличии: {{ ticket.quantity }}</p></div><div class="ticket-price">{{ ticket.price }}</div><a class="button button-small" href="{% url 'buy_ticket' ticket.id %}">Выбрать</a></div>{% empty %}<p class="muted">Билеты пока не добавлены.</p>{% endfor %}</section></div>
+{% url 'matches' as matches_url %}
+{% url 'match_video' match.id as video_url %}
+<a class="back" href="{% if matches_url %}{{ matches_url }}{% else %}/{% endif %}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>Все матчи</a>
+
+{% include '_scoreboard.html' with match=match %}
+
+{% if match.status == 'finished' %}
+  <div class="section-head">
+    <h2>Видеообзор</h2>
+    {% if match.video_file and video_url %}<a href="{{ video_url }}">Открыть на отдельной странице</a>{% endif %}
+  </div>
+  {% if match.video_file %}
+  <div class="video"><video controls preload="metadata" src="{{ match.video_file.url }}"></video></div>
+  {% else %}
+  <div class="empty">
+    <span class="pitch-mark"></span>
+    <strong>Видеообзора пока нет</strong>
+    <p>Матч окончен, а видео ещё не загрузили. Загляните позже.</p>
+  </div>
+  {% endif %}
+{% else %}
+  <div class="section-head"><h2>Билеты</h2></div>
+  <div class="tiers">
+    {% for t in ticket_types %}
+      {% include '_tier.html' with tier=t %}
+    {% empty %}
+      <div class="empty">
+        <span class="pitch-mark"></span>
+        <strong>Билеты пока не в продаже</strong>
+        <p>Загляните позже: категории появятся перед матчем.</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
 {% endblock %}

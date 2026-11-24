@@ -1,51 +1,77 @@
-{% load static %}
-<!doctype html>
+{% load static %}<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}TicketMaster{% endblock %}</title>
+  <title>{% block title %}Трибуна: билеты на футбол{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/ticket_master.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-  <header class="site-header">
-    <a class="brand" href="{% url 'home' %}"><span class="brand-mark">✦</span> Ticket<span>Master</span></a>
-    <nav class="main-nav">
-      <a href="{% url 'home' %}">Главная</a>
-      <a href="{% url 'matches' %}">Матчи</a>
-      <a href="{% url 'teams' %}">Команды</a>
-      <a href="{% url 'leagues' %}">Лиги</a>
-      <a href="{% url 'stadiums' %}">Стадионы</a>
+{% include '_icons.html' %}
+
+{# Ссылки сайта показываются сами, когда ты создашь страницы с такими именами в urls.py #}
+{% url 'home' as home_url %}
+{% url 'matches' as matches_url %}
+{% url 'teams' as teams_url %}
+{% url 'leagues' as leagues_url %}
+{% url 'stadiums' as stadiums_url %}
+{% url 'my_orders' as orders_url %}
+{% url 'login' as login_url %}
+{% url 'register' as register_url %}
+{% url 'logout' as logout_url %}
+
+<a class="skip" href="#main">К содержимому</a>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="{% if home_url %}{{ home_url }}{% else %}/{% endif %}">
+      <svg viewBox="0 0 32 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 3H28a1 1 0 0 1 1 1V9.5a2.5 2.5 0 0 0 0 5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V14.5a2.5 2.5 0 0 0 0-5V4a1 1 0 0 1 1-1Z"/><circle cx="16" cy="12" r="4"/><path d="M16 3v18" stroke-dasharray="2 2"/></svg>
+      <b>Трибуна</b>
+    </a>
+
+    <input class="nav-toggle" type="checkbox" id="nav-toggle">
+    <nav class="nav" aria-label="Основное меню">
+      {% with page=request.resolver_match.url_name %}
+      {% if matches_url %}<a href="{{ matches_url }}"{% if page == 'matches' or page == 'match_detail' %} class="is-active"{% endif %}>Матчи</a>{% endif %}
+      {% if teams_url %}<a href="{{ teams_url }}"{% if page == 'teams' or page == 'team_detail' %} class="is-active"{% endif %}>Клубы</a>{% endif %}
+      {% if leagues_url %}<a href="{{ leagues_url }}"{% if page == 'leagues' or page == 'league_detail' %} class="is-active"{% endif %}>Лиги</a>{% endif %}
+      {% if stadiums_url %}<a href="{{ stadiums_url }}"{% if page == 'stadiums' or page == 'stadium_detail' %} class="is-active"{% endif %}>Стадионы</a>{% endif %}
+      {% endwith %}
     </nav>
-    <div class="header-actions">
+
+    <div class="topbar-user">
       {% if user.is_authenticated %}
-        <a class="nav-extra" href="{% url 'my_tickets' %}">Мои билеты</a>
-        <a class="nav-extra" href="{% url 'my_orders' %}">Заказы</a>
-        <a class="button button-small button-outline" href="{% url 'logout' %}">Выйти</a>
+        {% if orders_url %}<a class="btn btn-ghost btn-sm" href="{{ orders_url }}"><svg class="icon" aria-hidden="true"><use href="#i-ticket"/></svg>Мои билеты</a>{% endif %}
+        {% if user.is_staff %}<a class="btn btn-ghost btn-sm" href="/admin/">Админка</a>{% endif %}
+        <span class="user-chip"><span class="avatar">{{ user.username|first|upper }}</span><span class="name">{{ user.username }}</span></span>
+        {% if logout_url %}<a class="btn btn-ghost btn-sm" href="{{ logout_url }}">Выйти</a>{% endif %}
       {% else %}
-        <a class="nav-extra" href="{% url 'login' %}">Войти</a>
-        <a class="button button-small" href="{% url 'registration' %}">Регистрация</a>
+        {% if login_url %}<a class="btn btn-ghost btn-sm" href="{{ login_url }}">Войти</a>{% endif %}
+        {% if register_url %}<a class="btn btn-primary btn-sm" href="{{ register_url }}">Регистрация</a>{% endif %}
       {% endif %}
     </div>
-  </header>
 
-  <main class="container">
-    {% if messages %}
-      <div class="messages">
-        {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
-      </div>
-    {% endif %}
-    {% block content %}{% endblock %}
-  </main>
+    <label class="nav-burger" for="nav-toggle" aria-label="Открыть меню"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></label>
+  </div>
+</header>
 
-  <footer class="site-footer">
-    <div class="brand"><span class="brand-mark">✦</span> Ticket<span>Master</span></div>
-    <p>Футбол ближе. Выбирай матч, бронируй место и поддерживай свою команду.</p>
-    <small>© {% now "Y" %} TicketMaster</small>
-  </footer>
+<main id="main" class="wrap">
+  {% block messages %}
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}<div class="msg msg-{{ message.tags }}" role="status">{{ message }}</div>{% endfor %}
+  </div>
+  {% endif %}
+  {% endblock %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  Учебный проект. Эмблемы клубов и фотографии принадлежат их владельцам.
+</footer>
 </body>
 </html>

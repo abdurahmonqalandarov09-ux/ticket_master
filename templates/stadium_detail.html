@@ -1,6 +1,31 @@
 {% extends 'base.html' %}
-{% block title %}{{ stadium }}{% endblock %}
+{% block title %}{{ stadium.name }}{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">ФУТБОЛЬНАЯ АРЕНА</span><h1>{{ stadium }}</h1></section>
-<section class="glass-panel"><h2>Команды стадиона</h2><div class="card-grid">{% for team in teams %}<a class="entity-card" href="{% url 'team_detail' team.id %}"><div class="entity-icon">⚽</div><h3>{{ team }}</h3></a>{% empty %}<p class="muted">Связанные команды не указаны.</p>{% endfor %}</div></section>
+{% url 'stadiums' as stadiums_url %}
+<a class="back" href="{% if stadiums_url %}{{ stadiums_url }}{% else %}/{% endif %}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>Все стадионы</a>
+
+<section class="profile profile-stadium pitch-corners">
+  <div class="profile-photo wide">
+    {% if stadium.photo %}<img src="{{ stadium.photo.url }}" alt="{{ stadium.name }}">{% else %}<span class="pitch-mark"></span>{% endif %}
+  </div>
+  <div class="profile-main">
+    <h1>{{ stadium.name }}</h1>
+    <p class="muted"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg> {{ stadium.city }}</p>
+    <p class="stat"><b>{{ stadium.capacity|floatformat:"0g" }}</b><span class="muted">мест на трибунах</span></p>
+  </div>
+</section>
+
+<div class="section-head"><h2>Клубы стадиона</h2></div>
+<div class="grid">
+  {% for t in teams %}
+    {% include '_team_card.html' with team=t %}
+  {% empty %}
+    <div class="empty">
+      <span class="pitch-mark"></span>
+      <strong>Домашних клубов нет</strong>
+      <p>Ни один клуб пока не привязан к этому стадиону.</p>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

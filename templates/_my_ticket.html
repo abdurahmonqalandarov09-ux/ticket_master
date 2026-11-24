@@ -1,0 +1,48 @@
+{# Мой билет: оплаченный заказ как бумажный билет. Вставка: include '_my_ticket.html' with order=o #}
+{% with m=order.ticket_type.match %}
+{% url 'match_detail' m.id as detail_url %}
+<div class="ticket-wrap">
+  <article class="ticket my-ticket" style="--lg: {{ m.league_id }}">
+    <div class="ticket-date">
+      <span class="day">{{ m.date|date:"j" }}</span>
+      <span class="mon">{{ m.date|date:"M" }}</span>
+      <span class="time">{{ m.date|date:"H:i" }}</span>
+    </div>
+
+    <div class="ticket-body">
+      <div class="ticket-league">
+        <span><i></i>{{ m.league.league_name }}</span>
+        <span class="flag">{{ order.ticket_type.get_ticket_display }}</span>
+      </div>
+      <div class="ticket-teams">
+        <div class="ticket-team">
+          {% if m.team1.team_logo %}<img class="crest" src="{{ m.team1.team_logo.url }}" alt="">{% else %}<span class="crest">{{ m.team1.team_name|first|upper }}</span>{% endif %}
+          <b>{{ m.team1.team_name }}</b>
+        </div>
+        {% if m.status == 'finished' %}
+        <div class="ticket-score">{{ m.home_score }}<i>:</i>{{ m.away_score }}</div>
+        {% else %}
+        <div class="ticket-vs">против</div>
+        {% endif %}
+        <div class="ticket-team away">
+          {% if m.team2.team_logo %}<img class="crest" src="{{ m.team2.team_logo.url }}" alt="">{% else %}<span class="crest">{{ m.team2.team_name|first|upper }}</span>{% endif %}
+          <b>{{ m.team2.team_name }}</b>
+        </div>
+      </div>
+      <div class="ticket-fine">
+        {% if m.team1.stadium %}<span><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>{{ m.team1.stadium.name }}, {{ m.team1.stadium.city }}</span>{% endif %}
+        <span>Заказ № {{ order.id|stringformat:"05d" }}</span>
+      </div>
+    </div>
+
+    <div class="ticket-stub">
+      <div class="stub-info">
+        <span class="stub-label">Билетов: {{ order.quantity }}</span>
+        <span class="stub-price">{{ order.price|floatformat:"-2" }}<small>TJS</small></span>
+        <span class="barcode" aria-hidden="true"></span>
+      </div>
+      <a class="btn btn-ink" href="{{ detail_url|default:'#' }}">О матче</a>
+    </div>
+  </article>
+</div>
+{% endwith %}

@@ -1,7 +1,30 @@
 {% extends 'base.html' %}
-{% block title %}Команды{% endblock %}
+{% block title %}Клубы{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">КЛУБЫ И СБОРНЫЕ</span><h1>Команды</h1><p>Знакомься с участниками турниров.</p></section>
-<form class="filter-bar" method="get"><label for="league">Лига</label><select id="league" name="league"><option value="">Все лиги</option>{% for item in leagues %}<option value="{{ item.id }}" {% if league == item.id|stringformat:"s" %}selected{% endif %}>{{ item }}</option>{% endfor %}</select><button class="button button-small">Фильтровать</button></form>
-<div class="card-grid">{% for team in teams %}<a class="entity-card" href="{% url 'team_detail' team.id %}"><div class="entity-icon">⚽</div><h3>{{ team.team_name }}</h3><p class="muted">{{ team }}</p><span class="text-link">Профиль команды →</span></a>{% empty %}<div class="empty-state">Команды пока не добавлены.</div>{% endfor %}</div>
+<div class="page-head">
+  <div>
+    <h1>Клубы</h1>
+    <p>Составы, тренеры и стадионы клубов пяти лучших лиг и Лиги чемпионов.</p>
+  </div>
+</div>
+
+<div class="chips chips-bar">
+  <a class="chip chip-all{% if not league %} is-active{% endif %}" href="?">Все лиги</a>
+  {% for l in leagues %}
+  <a class="chip{% if league == l.id|stringformat:"s" %} is-active{% endif %}" style="--lg: {{ l.id }}" href="?league={{ l.id }}">{{ l.league_name }}</a>
+  {% endfor %}
+</div>
+
+<div class="grid">
+  {% for t in teams %}
+    {% include '_team_card.html' with team=t %}
+  {% empty %}
+    <div class="empty">
+      <span class="pitch-mark"></span>
+      <strong>Клубов не найдено</strong>
+      <p>{% if league %}В этой лиге клубов пока нет. Выберите другую или сбросьте фильтр.{% else %}Клубы появятся здесь, когда их добавят.{% endif %}</p>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

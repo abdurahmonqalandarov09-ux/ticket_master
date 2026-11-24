@@ -1,6 +1,44 @@
 {% extends 'base.html' %}
 {% block title %}Мои заказы{% endblock %}
+
 {% block content %}
-<section class="page-heading"><span class="eyebrow">ЛИЧНЫЙ КАБИНЕТ</span><h1>Мои заказы</h1><p>История твоих покупок.</p></section>
-<div class="glass-panel">{% for order in orders %}<div class="order-row"><div><b>{{ order.ticket_type }}</b><p class="muted">Заказ №{{ order.id }} · {{ order.created_at|date:"d.m.Y H:i" }}</p></div><div class="order-meta"><b>{{ order.price }}</b><span class="pill">{{ order.get_status_display|default:order.status }}</span></div></div>{% empty %}<div class="empty-state">У тебя пока нет заказов.</div>{% endfor %}</div>
+{% url 'my_tickets' as tickets_url %}
+{% url 'matches' as matches_url %}
+<div class="page-head">
+  <div>
+    <h1>Мои заказы</h1>
+    <p>Вся история покупок, включая отменённые заказы.</p>
+  </div>
+  {% if tickets_url %}<div class="page-head-actions"><a class="btn btn-ghost" href="{{ tickets_url }}"><svg class="icon" aria-hidden="true"><use href="#i-ticket"/></svg>Мои билеты</a></div>{% endif %}
+</div>
+
+<div class="order-list">
+  {% for order in orders %}
+  {% with m=order.ticket_type.match %}
+  {% url 'match_detail' m.id as detail_url %}
+  <article class="order{% if order.status == 'canceled' %} is-canceled{% endif %}">
+    <div class="order-main">
+      <h3>{% if detail_url %}<a href="{{ detail_url }}">{{ m.team1.team_name }} <span class="vs">против</span> {{ m.team2.team_name }}</a>{% else %}{{ m.team1.team_name }} <span class="vs">против</span> {{ m.team2.team_name }}{% endif %}</h3>
+      <p class="muted">{{ m.league.league_name }}, {{ m.date|date:"j M Y, H:i" }}</p>
+    </div>
+    <dl class="order-facts">
+      <div><dt>Категория</dt><dd>{{ order.ticket_type.get_ticket_display }}</dd></div>
+      <div><dt>Билетов</dt><dd>{{ order.quantity }}</dd></div>
+      <div><dt>Сумма</dt><dd>{{ order.price|floatformat:"-2" }} TJS</dd></div>
+    </dl>
+    <div class="order-state">
+      <span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span>
+      <small>Заказ № {{ order.id|stringformat:"05d" }} от {{ order.created_at|date:"j M Y, H:i" }}</small>
+    </div>
+  </article>
+  {% endwith %}
+  {% empty %}
+  <div class="empty">
+    <span class="pitch-mark"></span>
+    <strong>Заказов пока нет</strong>
+    <p>Выберите матч и купите первые билеты.</p>
+    {% if matches_url %}<a class="btn btn-primary" href="{{ matches_url }}">Смотреть матчи</a>{% endif %}
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}

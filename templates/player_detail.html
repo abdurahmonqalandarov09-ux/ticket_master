@@ -1,5 +1,32 @@
 {% extends 'base.html' %}
-{% block title %}Игрок — TicketMaster{% endblock %}
+{% block title %}{{ player.player_name }}{% endblock %}
+
 {% block content %}
-<section class="profile-card"><div class="profile-avatar">👤</div><span class="eyebrow">ПРОФИЛЬ ИГРОКА</span><h1>{{ player }}</h1><div class="profile-number">№ {{ player.number|default:"—" }}</div><p class="muted">Информация об игроке</p></section>
+{% url 'team_detail' player.team.id as team_url %}
+<a class="back" href="{% if team_url %}{{ team_url }}{% else %}/{% endif %}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>{{ player.team.team_name }}</a>
+
+<section class="profile profile-player pitch-corners">
+  <div class="profile-photo">
+    {% if player.photo %}<img src="{{ player.photo.url }}" alt="{{ player.player_name }}">{% else %}<span class="pitch-mark"></span>{% endif %}
+    {% if player.number %}<span class="player-no" aria-hidden="true">{{ player.number }}</span>{% endif %}
+  </div>
+
+  <div class="profile-main">
+    <div>
+      <span class="pos pos-{{ player.position }}">{{ player.position|upper }}</span>
+      {% if player.is_captain %}<span class="badge badge-captain">Капитан</span>{% endif %}
+    </div>
+    <h1>{{ player.player_name }}</h1>
+    <p class="muted">{% if team_url %}<a href="{{ team_url }}">{{ player.team.team_name }}</a>{% else %}{{ player.team.team_name }}{% endif %}</p>
+
+    <dl class="facts">
+      <div><dt>Позиция</dt><dd>{{ player.get_position_display }}</dd></div>
+      {% if player.number %}<div><dt>Номер</dt><dd>{{ player.number }}</dd></div>{% endif %}
+      {% if player.country %}<div><dt>Страна</dt><dd>{{ player.country }}</dd></div>{% endif %}
+      {% if player.birth_date %}<div><dt>Дата рождения</dt><dd>{{ player.birth_date|date:"j E Y" }}</dd></div>{% endif %}
+      {% if player.height %}<div><dt>Рост</dt><dd>{{ player.height }} см</dd></div>{% endif %}
+      <div><dt>Стоимость</dt><dd>{{ player.transfer_value|floatformat:"0g" }}</dd></div>
+    </dl>
+  </div>
+</section>
 {% endblock %}

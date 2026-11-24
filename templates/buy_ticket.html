@@ -1,7 +1,55 @@
 {% extends 'base.html' %}
-{% block title %}Покупка билета{% endblock %}
+{% block title %}Покупка билетов{% endblock %}
+
 {% block content %}
-<section class="form-wrap"><div class="form-card"><span class="eyebrow">БРОНИРОВАНИЕ</span><h1>Покупка билета</h1><p class="muted">{{ ticket_type.match }} · {{ ticket_type.price }} за билет</p>
-<form method="post">{% csrf_token %}<label for="quantity">Количество билетов</label><input id="quantity" type="number" name="quantity" min="1" max="{{ ticket_type.quantity }}" value="1" required><p class="hint">Доступно: {{ ticket_type.quantity }}</p><button class="button button-full" type="submit">Подтвердить покупку</button></form>
-<a class="back-link" href="{% url 'match_detail' ticket_type.match.id %}">← Вернуться к матчу</a></div></section>
+{% url 'match_detail' ticket_type.match.id as detail_url %}
+<a class="back" href="{% if detail_url %}{{ detail_url }}{% else %}/{% endif %}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>К матчу</a>
+
+{% include '_scoreboard.html' with match=ticket_type.match %}
+
+<div class="ticket-wrap checkout">
+  {% if ticket_type.quantity > 0 %}
+  <form class="tier{% if ticket_type.ticket == 'vip' %} tier-vip{% endif %}" method="post" action="">
+    {% csrf_token %}
+    <div class="tier-top">
+      <h2 class="tier-name">{{ ticket_type.get_ticket_display }}</h2>
+      <span class="badge badge-low">Осталось {{ ticket_type.quantity }}</span>
+    </div>
+    <p class="tier-price">{{ ticket_type.price|floatformat:"-2" }}<small>TJS за билет</small></p>
+
+    <div class="checkout-qty">
+      <label class="label" for="qty">Сколько билетов</label>
+      <input class="input" id="qty" type="number" name="quantity" min="1" max="{{ ticket_type.quantity }}" value="1" data-price="{{ ticket_type.price|stringformat:'s' }}">
+    </div>
+    <p class="checkout-total">Итого <b><span id="total">{{ ticket_type.price|floatformat:"-2" }}</span> TJS</b></p>
+
+    <div class="tier-buy">
+      <button class="btn btn-ink" type="submit">Купить</button>
+      {% if detail_url %}<a class="btn btn-paper" href="{{ detail_url }}">Назад</a>{% endif %}
+    </div>
+  </form>
+  {% else %}
+  <div class="tier">
+    <div class="tier-top">
+      <h2 class="tier-name">{{ ticket_type.get_ticket_display }}</h2>
+      <span class="badge badge-canceled">Распродано</span>
+    </div>
+    <p class="tier-meta">Билетов этой категории больше нет. Посмотрите другие категории на странице матча.</p>
+    {% if detail_url %}<div class="tier-buy"><a class="btn btn-paper" href="{{ detail_url }}">К матчу</a></div>{% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  (function () {
+    var q = document.getElementById('qty'), t = document.getElementById('total');
+    if (!q || !t) return;
+    var price = parseFloat(q.getAttribute('data-price'));
+    function show() {
+      var n = parseInt(q.value, 10) || 0;
+      t.textContent = (n * price).toFixed(2).replace(/\.00$/, '');
+    }
+    q.addEventListener('input', show);
+  })();
+</script>
 {% endblock %}
